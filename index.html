@@ -1,46 +1,69 @@
 <!DOCTYPE html>
-<html lang="bn" dir="ltr" class="h-full">
+<html lang="bn" dir="ltr" class="h-full bg-slate-50">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>Al Jahra Probashi Bandhan Samiti - Kuwait Car Dealership</title>
 
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: { sans: ['Hind Siliguri', 'Inter', 'sans-serif'] }
+          fontFamily: { sans: ['Hind Siliguri', 'Inter', 'sans-serif'] },
+          colors: { jahra: '#1e293b' }
         }
       }
     }
   </script>
+
   <style>
-    body { font-family: 'Hind Siliguri', sans-serif; background-color: #f1f5f9; }
+    body { font-family: 'Hind Siliguri', sans-serif; }
     
-    /* CRITICAL PRINT FIXES */
+    /* Hide scrollbar for smooth UI */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    /* Mobile Bottom Nav FAB pop-out effect */
+    .fab-button {
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    /* CRITICAL PRINT FIXES (No blank pages, A4 format) */
     @media print {
       @page { size: A4 portrait; margin: 15mm 10mm; }
-      
-      /* Reset structural containers to flow naturally on paper */
-      html, body { height: auto !important; min-height: 100% !important; overflow: visible !important; position: static !important; background: #fff !important; margin: 0 !important; padding: 0 !important; }
+      html, body { height: auto !important; overflow: visible !important; position: static !important; background: #fff !important; margin: 0 !important; padding: 0 !important; }
       #app-container, main { display: block !important; height: auto !important; overflow: visible !important; position: static !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
       
-      /* Force colors to print */
+      /* Force background colors to print */
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 
-      /* Hide UI elements globally */
-      aside, header, .no-print, #login-screen { display: none !important; }
+      /* Hide non-printable UI globally */
+      aside, header, #mobile-bottom-nav, .no-print, #login-screen { display: none !important; }
+      main { padding: 0 !important; padding-bottom: 0 !important; }
 
-      /* When printing the Report */
+      /* Report Print Logic */
       body.printing-report .tab-section { display: none !important; }
       body.printing-report #tab-reports { display: block !important; height: auto !important; overflow: visible !important; }
       body.printing-report #printable-report-area { display: block !important; position: static !important; width: 100% !important; margin: 0 !important; padding: 0 !important; border: none !important; box-shadow: none !important; }
 
-      /* When printing a Receipt Modal */
+      /* Receipt Print Logic */
       body.printing-receipt #app-container { display: none !important; }
       body.printing-receipt .modal-backdrop { display: none !important; }
       body.printing-receipt #receiptModal { display: block !important; position: static !important; height: auto !important; overflow: visible !important; background: transparent !important; }
@@ -48,206 +71,286 @@
     }
   </style>
 </head>
-<body class="text-slate-800 h-full flex flex-col antialiased">
+<body class="text-slate-800 h-full flex flex-col antialiased bg-slate-50 overflow-hidden">
 
-  <!-- Login Screen -->
+  <!-- ==========================================
+       LOGIN SCREEN
+  =========================================== -->
   <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900 p-4">
-    <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md border border-slate-200 relative overflow-hidden">
-      <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-500 rounded-full mix-blend-multiply filter blur-2xl opacity-50"></div>
-      <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-emerald-500 rounded-full mix-blend-multiply filter blur-2xl opacity-50"></div>
+    <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md border border-slate-200 relative overflow-hidden">
+      <!-- Decorative background blur -->
+      <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
+      <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
       
-      <div class="text-center mb-6 relative z-10">
-        <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-indigo-700 text-white rounded-2xl flex items-center justify-center text-3xl font-bold mx-auto mb-3 shadow-lg">ج</div>
-        <h1 class="text-2xl font-bold text-slate-900">Al Jahra</h1>
-        <p class="text-sm font-semibold text-amber-600">প্রবাসী বন্ধন সমিতি (কুয়েত)</p>
+      <div class="text-center mb-8 relative z-10">
+        <div class="w-20 h-20 bg-gradient-to-tr from-indigo-600 to-purple-700 text-white rounded-2xl flex items-center justify-center text-4xl font-bold mx-auto mb-4 shadow-lg shadow-indigo-500/30">
+          <i class="fa-solid fa-car"></i>
+        </div>
+        <h1 class="text-2xl font-black text-slate-900 tracking-tight">Al Jahra Samiti</h1>
+        <p class="text-sm font-semibold text-indigo-600">Kuwait Car Dealership</p>
       </div>
       
-      <form id="login-form" class="space-y-4 relative z-10">
+      <form id="login-form" class="space-y-5 relative z-10">
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-1">লগিন আইডি (User ID)</label>
-          <input type="text" id="login-id" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-600 outline-none font-mono" placeholder="admin বা user1" required>
+          <label class="block text-sm font-bold text-slate-700 mb-1">লগিন আইডি (User ID)</label>
+          <div class="relative">
+            <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="text" id="login-id" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 outline-none font-mono font-medium transition" placeholder="admin or user1" required>
+          </div>
         </div>
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-1">পাসওয়ার্ড (Password)</label>
-          <input type="password" id="login-pass" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-600 outline-none" required>
+          <label class="block text-sm font-bold text-slate-700 mb-1">পাসওয়ার্ড (Password)</label>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="password" id="login-pass" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 outline-none font-medium transition" placeholder="••••••••" required>
+          </div>
         </div>
-        <p id="login-error" class="text-rose-600 text-xs font-bold hidden">ভুল আইডি বা পাসওয়ার্ড!</p>
-        <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold py-2.5 rounded-lg transition shadow-md">
+        <p id="login-error" class="text-rose-600 text-sm font-bold hidden text-center"><i class="fa-solid fa-circle-exclamation mr-1"></i> ভুল আইডি বা পাসওয়ার্ড!</p>
+        <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-indigo-500/30 text-lg">
           প্রবেশ করুন (Login)
         </button>
       </form>
-      <div class="mt-4 text-xs text-slate-500 text-center bg-slate-50 p-2 rounded border relative z-10">
-        <p class="font-bold">Admin: ID: admin | Pass: admin123</p>
-        <p>User: ID: user1 to user10 | Pass: user123</p>
+      <div class="mt-6 text-xs text-slate-500 text-center bg-slate-100 p-3 rounded-xl border border-slate-200 relative z-10">
+        <p class="font-bold text-slate-700 mb-1">Demo Credentials:</p>
+        <p>Admin: <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-bold">admin</code> / <code class="bg-white px-1 py-0.5 rounded text-indigo-600 font-bold">admin123</code></p>
+        <p>User: <code class="bg-white px-1 py-0.5 rounded text-slate-700 font-bold">user1</code> to <code class="bg-white px-1 py-0.5 rounded text-slate-700 font-bold">user10</code> / <code class="bg-white px-1 py-0.5 rounded text-slate-700 font-bold">user123</code></p>
       </div>
     </div>
   </div>
 
-  <div id="app-container" class="hidden flex-1 flex flex-col md:flex-row h-full overflow-hidden">
+  <!-- ==========================================
+       MAIN APP CONTAINER
+  =========================================== -->
+  <div id="app-container" class="hidden flex-1 flex h-full overflow-hidden w-full">
     
-    <!-- Sidebar -->
-    <aside class="w-full md:w-64 bg-slate-900 text-white flex flex-col md:h-screen flex-shrink-0 no-print hidden md:flex">
-      <div class="p-5 border-b border-slate-800">
-        <h2 class="font-bold text-base tracking-tight text-white">Al Jahra Probashi</h2>
-        <p class="text-xs text-amber-400 font-semibold">Bandhan Samiti</p>
+    <!-- Desktop Sidebar -->
+    <aside class="w-64 bg-jahra text-white hidden md:flex flex-col flex-shrink-0 no-print z-40 shadow-xl">
+      <div class="p-6 border-b border-slate-700/50">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center text-xl font-bold shadow-lg">ج</div>
+          <div>
+            <h2 class="font-black text-lg leading-tight tracking-tight">Al Jahra</h2>
+            <p class="text-[10px] text-indigo-300 font-bold uppercase tracking-wider">Probashi Bandhan</p>
+          </div>
+        </div>
       </div>
-      <nav class="flex-1 overflow-y-auto p-3 space-y-2 text-sm font-medium">
-        <button onclick="switchTab('dashboard')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition flex items-center gap-2"><span>📊</span> ড্যাশবোর্ড</button>
-        <button onclick="switchTab('cars')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition flex items-center gap-2"><span>🚘</span> গাড়ি স্টক</button>
-        <button onclick="switchTab('installments')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition flex items-center gap-2"><span>💰</span> কিস্তি আদায়</button>
-        <button onclick="switchTab('investors')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition flex items-center gap-2"><span>👥</span> ইনভেস্টর প্রোফাইল</button>
-        <button onclick="switchTab('reports')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition text-amber-400 flex items-center gap-2"><span>🖨️</span> প্রিন্ট সেন্টার</button>
+      <nav class="flex-1 overflow-y-auto p-4 space-y-1 text-sm font-medium">
+        <button onclick="switchTab('dashboard')" class="nav-btn w-full text-left px-4 py-3.5 rounded-xl hover:bg-slate-800 transition flex items-center gap-3 text-slate-300 hover:text-white" data-target="dashboard"><i class="fa-solid fa-chart-pie w-5 text-center"></i> ড্যাশবোর্ড</button>
+        <button onclick="switchTab('cars')" class="nav-btn w-full text-left px-4 py-3.5 rounded-xl hover:bg-slate-800 transition flex items-center gap-3 text-slate-300 hover:text-white" data-target="cars"><i class="fa-solid fa-car w-5 text-center"></i> গাড়ি স্টক</button>
+        <button onclick="switchTab('installments')" class="nav-btn w-full text-left px-4 py-3.5 rounded-xl hover:bg-slate-800 transition flex items-center gap-3 text-slate-300 hover:text-white" data-target="installments"><i class="fa-solid fa-hand-holding-dollar w-5 text-center"></i> কিস্তি আদায়</button>
+        <button onclick="switchTab('investors')" class="nav-btn w-full text-left px-4 py-3.5 rounded-xl hover:bg-slate-800 transition flex items-center gap-3 text-slate-300 hover:text-white" data-target="investors"><i class="fa-solid fa-users w-5 text-center"></i> ইনভেস্টর প্রোফাইল</button>
+        <button onclick="switchTab('reports')" class="nav-btn w-full text-left px-4 py-3.5 rounded-xl hover:bg-slate-800 transition flex items-center gap-3 text-slate-300 hover:text-white" data-target="reports"><i class="fa-solid fa-print w-5 text-center"></i> প্রিন্ট সেন্টার</button>
       </nav>
-      <div class="p-4 border-t border-slate-800 text-xs flex justify-between items-center bg-slate-950">
-        <span class="text-slate-400">লগিন: <span id="current-user-role" class="font-bold text-emerald-400 uppercase">USER</span></span>
-        <button onclick="logout()" class="text-rose-400 hover:text-rose-300 font-bold bg-rose-950/30 px-3 py-1.5 rounded">লগআউট</button>
+      <div class="p-4 border-t border-slate-700/50 bg-slate-900/50">
+        <div class="flex justify-between items-center bg-slate-800 rounded-xl p-3">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center"><i class="fa-solid fa-user text-xs"></i></div>
+            <div class="text-xs">
+              <p class="text-slate-400 font-medium">Logged in as</p>
+              <p id="current-user-role-desktop" class="font-bold text-white uppercase"></p>
+            </div>
+          </div>
+          <button onclick="logout()" class="text-rose-400 hover:text-rose-300 p-2"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+        </div>
       </div>
     </aside>
 
-    <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto p-4 md:p-6 relative">
-      <div class="max-w-6xl mx-auto space-y-6">
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto relative w-full h-full bg-slate-50 pb-24 md:pb-6">
+      <!-- Mobile Header -->
+      <header class="md:hidden bg-jahra text-white p-4 sticky top-0 z-40 flex justify-between items-center shadow-md no-print">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center font-bold">ج</div>
+          <h1 class="font-bold text-lg">Al Jahra</h1>
+        </div>
+        <button onclick="logout()" class="text-rose-400 text-sm font-bold"><i class="fa-solid fa-power-off mr-1"></i> Logout</button>
+      </header>
 
-        <header class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200 no-print">
-          <h1 id="page-title" class="text-lg md:text-2xl font-bold text-slate-900 tracking-tight">ড্যাশবোর্ড</h1>
-          <div class="bg-indigo-50 text-indigo-700 px-4 py-2 rounded-lg text-sm font-bold border border-indigo-100 flex items-center gap-2">
-            <span>🇰🇼</span> Currency: KWD (د.ك)
+      <div class="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
+        <!-- Desktop Page Header -->
+        <header class="hidden md:flex justify-between items-center bg-white p-5 rounded-2xl shadow-sm border border-slate-200 no-print">
+          <h1 id="page-title" class="text-2xl font-black text-slate-800 tracking-tight">ড্যাশবোর্ড ওভারভিউ</h1>
+          <div class="bg-indigo-50 text-indigo-700 px-4 py-2 rounded-xl text-sm font-bold border border-indigo-100 flex items-center gap-2">
+            <i class="fa-solid fa-money-bill-wave"></i> Currency: KWD (د.ك)
           </div>
         </header>
 
-        <!-- DASHBOARD TAB -->
         <section id="tab-dashboard" class="tab-section space-y-6">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div class="bg-gradient-to-br from-blue-600 to-indigo-800 p-6 rounded-2xl shadow-lg text-white relative overflow-hidden">
-              <div class="absolute -right-4 -top-4 text-white/10 text-8xl">👥</div>
-              <p class="text-sm font-bold text-blue-100 uppercase tracking-wider relative z-10">মালিকদের মোট মূলধন</p>
-              <h3 id="dash-capital" class="text-3xl font-black mt-2 tabular-nums relative z-10">0.000 KWD</h3>
+          <!-- Colorful KPI Cards (Non-minimalist) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div class="bg-gradient-to-br from-blue-500 to-indigo-700 p-6 rounded-3xl shadow-lg shadow-blue-500/20 text-white relative overflow-hidden">
+              <i class="fa-solid fa-users absolute -right-4 -bottom-4 text-8xl text-white/10"></i>
+              <p class="text-sm font-bold text-blue-100 mb-1 relative z-10 uppercase tracking-wide">মালিকদের মূলধন</p>
+              <h3 id="dash-capital" class="text-2xl md:text-3xl font-black tabular-nums relative z-10 truncate">0.000 <span class="text-lg">KWD</span></h3>
             </div>
-            <div class="bg-gradient-to-br from-emerald-500 to-teal-700 p-6 rounded-2xl shadow-lg text-white relative overflow-hidden">
-              <div class="absolute -right-4 -top-4 text-white/10 text-8xl">💰</div>
-              <p class="text-sm font-bold text-emerald-100 uppercase tracking-wider relative z-10">মোট কিস্তি আদায়</p>
-              <h3 id="dash-inst-collected" class="text-3xl font-black mt-2 tabular-nums relative z-10">0.000 KWD</h3>
+            
+            <div class="bg-gradient-to-br from-orange-400 to-red-500 p-6 rounded-3xl shadow-lg shadow-orange-500/20 text-white relative overflow-hidden">
+              <i class="fa-solid fa-car absolute -right-4 -bottom-4 text-8xl text-white/10"></i>
+              <p class="text-sm font-bold text-orange-100 mb-1 relative z-10 uppercase tracking-wide">গাড়ি স্টক (ইন / আউট)</p>
+              <h3 id="dash-stock" class="text-2xl md:text-3xl font-black relative z-10 truncate">0 টি স্টকে</h3>
             </div>
-            <div class="bg-gradient-to-br from-amber-500 to-orange-600 p-6 rounded-2xl shadow-lg text-white relative overflow-hidden">
-              <div class="absolute -right-4 -top-4 text-white/10 text-8xl">🚘</div>
-              <p class="text-sm font-bold text-amber-100 uppercase tracking-wider relative z-10">গাড়ি স্টক (ইন / আউট)</p>
-              <h3 id="dash-stock" class="text-3xl font-black mt-2 relative z-10">0 টি স্টকে</h3>
+
+            <div class="bg-gradient-to-br from-emerald-400 to-teal-600 p-6 rounded-3xl shadow-lg shadow-emerald-500/20 text-white relative overflow-hidden">
+              <i class="fa-solid fa-hand-holding-dollar absolute -right-4 -bottom-4 text-8xl text-white/10"></i>
+              <p class="text-sm font-bold text-emerald-100 mb-1 relative z-10 uppercase tracking-wide">মোট কিস্তি আদায়</p>
+              <h3 id="dash-inst-collected" class="text-2xl md:text-3xl font-black tabular-nums relative z-10 truncate">0.000 <span class="text-lg">KWD</span></h3>
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-500 to-pink-600 p-6 rounded-3xl shadow-lg shadow-purple-500/20 text-white relative overflow-hidden">
+              <i class="fa-solid fa-arrow-trend-up absolute -right-4 -bottom-4 text-8xl text-white/10"></i>
+              <p class="text-sm font-bold text-purple-100 mb-1 relative z-10 uppercase tracking-wide">প্রত্যাশিত মুনাফা (Profit)</p>
+              <h3 id="dash-profit" class="text-2xl md:text-3xl font-black tabular-nums relative z-10 truncate">+0.000 <span class="text-lg">KWD</span></h3>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div class="md:col-span-2 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-              <h3 class="font-bold text-slate-800 mb-4">মাসিক কিস্তি ক্যাশফ্লো (KWD)</h3>
-              <div class="h-64 relative"><canvas id="lineChart"></canvas></div>
+          <!-- Charts Area -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-white p-5 md:p-6 rounded-3xl shadow-sm border border-slate-200">
+              <h3 class="font-black text-slate-800 mb-4 text-lg"><i class="fa-solid fa-chart-line text-indigo-500 mr-2"></i> মাসিক কিস্তি আদায় ও ক্যাশফ্লো</h3>
+              <div class="h-64 relative w-full"><canvas id="cashflowChart"></canvas></div>
             </div>
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
-              <h3 class="font-bold text-slate-800 mb-4">গাড়ির স্টক অনুপাত</h3>
+            <div class="bg-white p-5 md:p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col">
+              <h3 class="font-black text-slate-800 mb-4 text-lg"><i class="fa-solid fa-chart-pie text-emerald-500 mr-2"></i> গাড়ির স্টক অনুপাত</h3>
               <div class="flex-1 relative flex items-center justify-center min-h-[200px]"><canvas id="pieChart"></canvas></div>
             </div>
           </div>
         </section>
 
-        <!-- CAR INVENTORY TAB -->
         <section id="tab-cars" class="tab-section hidden space-y-4">
-          <div class="flex flex-col sm:flex-row justify-between items-center gap-4 no-print bg-white p-4 rounded-xl border shadow-sm">
-            <input type="text" placeholder="গাড়ি খুঁজুন..." class="px-4 py-2 bg-slate-50 border rounded-lg text-sm w-full sm:w-72 outline-none focus:ring-2 focus:ring-indigo-500">
-            <button class="admin-only w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow transition" onclick="openEditCarModal()">+ নতুন গাড়ি এন্ট্রি</button>
+          <div class="flex flex-col sm:flex-row justify-between items-center gap-4 no-print bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="relative w-full sm:w-96">
+              <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+              <input type="text" id="search-car" onkeyup="renderCars()" placeholder="গাড়ি খুঁজুন (মডেল বা প্লেট)..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-sm transition">
+            </div>
+            <button class="admin-only w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/30 transition flex items-center justify-center gap-2" onclick="openEditCarModal()">
+              <i class="fa-solid fa-plus"></i> নতুন গাড়ি এন্ট্রি
+            </button>
           </div>
-          <div class="bg-white border rounded-xl shadow-sm overflow-x-auto">
-            <table class="w-full text-left text-sm text-slate-600">
-              <thead class="bg-slate-50 text-slate-800 text-xs uppercase font-bold border-b">
-                <tr><th class="p-4">প্লেট নম্বর</th><th class="p-4">মডেল</th><th class="p-4">ক্রয় মূল্য</th><th class="p-4">স্ট্যাটাস</th><th class="p-4 text-right">অ্যাডমিন একশন</th></tr>
-              </thead>
-              <tbody id="cars-table-body" class="divide-y divide-slate-100"></tbody>
-            </table>
+          
+          <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+            <div class="overflow-x-auto touch-pan-x">
+              <table class="w-full text-left text-sm text-slate-600 whitespace-nowrap min-w-[700px]">
+                <thead class="bg-slate-100 text-slate-800 text-xs uppercase font-black">
+                  <tr>
+                    <th class="p-4">প্লেট নম্বর</th>
+                    <th class="p-4">মডেল</th>
+                    <th class="p-4">ক্রয় মূল্য</th>
+                    <th class="p-4">বিক্রয় মূল্য</th>
+                    <th class="p-4">স্ট্যাটাস</th>
+                    <th class="p-4 text-right">অ্যাকশন</th>
+                  </tr>
+                </thead>
+                <tbody id="cars-table-body" class="divide-y divide-slate-100 font-medium"></tbody>
+              </table>
+            </div>
           </div>
         </section>
 
-        <!-- INSTALLMENTS TAB -->
         <section id="tab-installments" class="tab-section hidden space-y-4">
-          <div class="bg-white border rounded-xl shadow-sm overflow-x-auto">
-            <table class="w-full text-left text-sm text-slate-600">
-              <thead class="bg-slate-50 text-slate-800 text-xs uppercase font-bold border-b">
-                <tr><th class="p-4">গাড়ি ও গ্যারান্টার</th><th class="p-4">মোট আদায়</th><th class="p-4">বাকি (Due)</th><th class="p-4 text-right">আদায় করুন</th></tr>
-              </thead>
-              <tbody id="installments-table-body" class="divide-y divide-slate-100"></tbody>
-            </table>
+          <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+            <div class="overflow-x-auto touch-pan-x">
+              <table class="w-full text-left text-sm text-slate-600 whitespace-nowrap min-w-[700px]">
+                <thead class="bg-slate-100 text-slate-800 text-xs uppercase font-black">
+                  <tr>
+                    <th class="p-4">গাড়ি ও গ্যারান্টার</th>
+                    <th class="p-4">মোট বিক্রয় মূল্য</th>
+                    <th class="p-4 text-emerald-700">মোট আদায়</th>
+                    <th class="p-4 text-rose-700">বাকি (Due)</th>
+                    <th class="p-4 text-right">কিস্তি সংগ্রহ</th>
+                  </tr>
+                </thead>
+                <tbody id="installments-table-body" class="divide-y divide-slate-100 font-medium"></tbody>
+              </table>
+            </div>
           </div>
         </section>
 
-        <!-- INVESTORS TAB -->
         <section id="tab-investors" class="tab-section hidden space-y-4">
-          <div class="flex justify-between items-center no-print bg-white p-4 rounded-xl border shadow-sm">
-            <h3 class="font-bold text-slate-800 text-lg">ইনভেস্টর ও মূলধন হিসাব</h3>
-            <button class="admin-only bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow transition" onclick="openEditInvestorModal()">+ নতুন ইনভেস্টর</button>
+          <div class="flex justify-between items-center no-print bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <h3 class="font-black text-slate-800 text-lg flex items-center gap-2"><i class="fa-solid fa-users text-indigo-500"></i> ইনভেস্টর ও মূলধন</h3>
+            <button class="admin-only bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/30 transition flex items-center justify-center gap-2" onclick="openEditInvestorModal()">
+              <i class="fa-solid fa-user-plus"></i> যোগ করুন
+            </button>
           </div>
-          <div id="investors-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+          <!-- Grid for Investor Cards -->
+          <div id="investors-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
         </section>
 
-        <!-- REPORTS TAB (Print Target) -->
-        <section id="tab-reports" class="tab-section hidden space-y-4">
-          <div class="bg-white p-4 rounded-xl border no-print flex flex-wrap gap-4 items-end shadow-sm justify-between">
-            <div>
-              <label class="block text-xs font-bold mb-1 text-slate-600">রিপোর্ট ফিল্টার</label>
-              <select id="report-type" class="bg-slate-50 border p-2.5 rounded-lg text-sm w-48 font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+        <section id="tab-reports" class="tab-section hidden space-y-6">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 no-print flex flex-col sm:flex-row gap-4 justify-between items-center shadow-sm">
+            <div class="w-full sm:w-auto">
+              <label class="block text-xs font-bold mb-1 text-slate-500 uppercase tracking-wide">রিপোর্টের ধরন</label>
+              <select id="report-type" class="bg-slate-50 border border-slate-200 p-3 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-64">
                 <option value="Monthly">মাসিক (Monthly)</option>
                 <option value="Quarterly">ত্রৈমাসিক (Quarterly)</option>
                 <option value="Yearly">বাৎসরিক (Yearly)</option>
-                <option value="Custom">Custom</option>
               </select>
             </div>
-            <div class="flex gap-3">
-              <button onclick="generateReport()" class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow">রিপোর্ট তৈরি</button>
-              <button onclick="printReport()" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow flex items-center gap-2">
-                🖨️ প্রিন্ট / PDF
+            <div class="flex w-full sm:w-auto gap-3">
+              <button onclick="generateReportData()" class="flex-1 sm:flex-none bg-slate-800 hover:bg-slate-900 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-md transition">জেনারেট</button>
+              <button onclick="executePrint('report')" class="flex-1 sm:flex-none bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2 transition">
+                <i class="fa-solid fa-print"></i> প্রিন্ট PDF
               </button>
             </div>
           </div>
 
-          <div id="printable-report-area" class="bg-white p-10 border rounded-xl shadow-sm min-h-[800px] flex flex-col relative">
-            <div class="text-center border-b-2 border-slate-900 pb-5 mb-6">
-              <h2 class="text-3xl font-black text-slate-900 uppercase tracking-wide">Al Jahra Probashi Bandhan Samiti</h2>
-              <p class="text-base font-bold text-slate-600 mt-1">الجهراء رابطة المغتربين - Kuwait Car Dealership</p>
-              <div class="mt-4 text-sm font-bold bg-indigo-50 text-indigo-800 inline-block px-5 py-2 rounded-full border border-indigo-200">
-                অফিসিয়াল হিসাব বিবরণী - <span id="rep-display-type" class="text-emerald-700">মাসিক (Monthly)</span>
+          <!-- Printable A4 Report Area -->
+          <div id="printable-report-area" class="bg-white p-8 md:p-12 border border-slate-200 rounded-2xl shadow-sm min-h-[800px] flex flex-col relative mx-auto max-w-4xl">
+            <!-- Header -->
+            <div class="text-center border-b-2 border-slate-800 pb-6 mb-8">
+              <div class="w-16 h-16 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-3xl font-bold mx-auto mb-4 print:border">ج</div>
+              <h2 class="text-2xl md:text-3xl font-black text-slate-900 uppercase tracking-wide">Al Jahra Probashi Bandhan Samiti</h2>
+              <p class="text-sm md:text-base font-bold text-slate-600 mt-1">الجهراء رابطة المغتربين - Kuwait Car Dealership</p>
+              <div class="mt-4 text-xs font-black bg-indigo-50 text-indigo-800 inline-block px-4 py-1.5 rounded-full border border-indigo-200 uppercase tracking-widest">
+                হিসাব বিবরণী: <span id="rep-display-type" class="text-emerald-700 ml-1">Monthly</span>
               </div>
             </div>
             
-            <div class="flex-1 text-sm">
+            <!-- Data Table -->
+            <div class="flex-1 text-sm md:text-base">
               <table class="w-full text-left mb-8 border-collapse">
                 <thead>
                   <tr class="bg-slate-100 border-b-2 border-slate-300">
-                    <th class="p-3 border font-bold">বিবরণ (Description)</th>
-                    <th class="p-3 border text-right font-bold">অ্যামাউন্ট (KWD)</th>
+                    <th class="p-4 border border-slate-200 font-bold text-slate-800">বিবরণ (Description)</th>
+                    <th class="p-4 border border-slate-200 text-right font-bold text-slate-800">অ্যামাউন্ট (KWD)</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td class="p-3 border">মোট ইনভেস্টর মূলধন</td>
-                    <td id="rep-capital" class="p-3 border text-right font-mono font-bold text-slate-800">0.000</td>
+                    <td class="p-4 border border-slate-200 font-medium">মোট ইনভেস্টর মূলধন (Total Capital)</td>
+                    <td id="rep-capital" class="p-4 border border-slate-200 text-right font-mono font-bold text-slate-800">0.000</td>
                   </tr>
                   <tr>
-                    <td class="p-3 border">মোট গাড়ি ক্রয় ব্যয় (Inventory Cost)</td>
-                    <td id="rep-car-cost" class="p-3 border text-right font-mono font-bold text-slate-800">0.000</td>
+                    <td class="p-4 border border-slate-200 font-medium">গাড়ি ক্রয় ব্যয় (Inventory Cost)</td>
+                    <td id="rep-car-cost" class="p-4 border border-slate-200 text-right font-mono font-bold text-slate-800">0.000</td>
                   </tr>
-                  <tr>
-                    <td class="p-3 border text-emerald-700 font-bold">মোট কিস্তি আদায় (Total Installments Collected)</td>
-                    <td id="rep-inst-collected" class="p-3 border text-right font-mono font-black text-emerald-700 bg-emerald-50">0.000</td>
+                  <tr class="bg-emerald-50/50">
+                    <td class="p-4 border border-slate-200 text-emerald-800 font-bold">কিস্তি আদায় (Total Installments Collected)</td>
+                    <td id="rep-inst-collected" class="p-4 border border-slate-200 text-right font-mono font-black text-emerald-700">0.000</td>
+                  </tr>
+                  <tr class="bg-rose-50/50">
+                    <td class="p-4 border border-slate-200 text-rose-800 font-bold">মার্কেটে বকেয়া (Total Market Due)</td>
+                    <td id="rep-due" class="p-4 border border-slate-200 text-right font-mono font-black text-rose-700">0.000</td>
+                  </tr>
+                  <tr class="bg-indigo-50">
+                    <td class="p-4 border border-slate-200 text-indigo-900 font-black">প্রত্যাশিত মোট লাভ (Total Expected Profit)</td>
+                    <td id="rep-profit" class="p-4 border border-slate-200 text-right font-mono font-black text-indigo-700">0.000</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            <!-- 10 Signature Slots -->
-            <div class="mt-10 pt-8 border-t-2 border-dashed border-slate-300">
-              <h4 class="text-center font-bold text-base mb-10 uppercase tracking-widest text-slate-800">সমিতির সদস্যদের স্বাক্ষর (Board Signatures)</h4>
-              <div class="grid grid-cols-2 md:grid-cols-5 gap-y-16 gap-x-6 text-center">
+            <!-- Signatures Section (10 Members) -->
+            <div class="mt-auto pt-10 border-t-2 border-dashed border-slate-300">
+              <h4 class="text-center font-black text-sm mb-12 uppercase tracking-widest text-slate-800">বোর্ড সদস্যদের স্বাক্ষর (Board Signatures)</h4>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-y-16 gap-x-6 text-center">
                 <script>
+                  // Default 10 members as requested
                   const printMembers = ["হাসান", "ইমরান", "মোকাররম", "মাইনুদ্দিন", "শহিদ", "জাব্বার ১", "জাব্বার ২", "শাহাবুদ্দিন", "আপু", "ফারুক"];
                   printMembers.forEach((name, i) => {
                     document.write(`
                       <div class="flex flex-col items-center">
-                        <div class="w-full border-b border-slate-800 mb-2"></div>
+                        <div class="w-3/4 border-b border-slate-800 mb-2 print:border-black"></div>
                         <span class="text-xs text-slate-600 font-bold">${i+1}. ${name}</span>
                       </div>
                     `);
@@ -257,39 +360,84 @@
             </div>
           </div>
         </section>
-
       </div>
     </main>
-  </div>
 
-  <!-- ADD/EDIT CAR MODAL -->
+    <!-- ==========================================
+         MOBILE BOTTOM NAVIGATION (CRITICAL)
+    =========================================== -->
+    <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-jahra text-slate-400 flex justify-around items-end pb-safe h-16 shadow-[0_-10px_20px_rgba(0,0,0,0.15)] no-print px-2">
+      <!-- 1. Dashboard -->
+      <button onclick="switchTab('dashboard')" class="mob-nav-btn flex flex-col items-center justify-center w-16 h-14 pb-1 hover:text-white transition" data-target="dashboard">
+        <i class="fa-solid fa-chart-pie text-lg mb-1"></i>
+        <span class="text-[10px] font-bold">ড্যাশবোর্ড</span>
+      </button>
+      
+      <!-- 2. Stock -->
+      <button onclick="switchTab('cars')" class="mob-nav-btn flex flex-col items-center justify-center w-16 h-14 pb-1 hover:text-white transition" data-target="cars">
+        <i class="fa-solid fa-car text-lg mb-1"></i>
+        <span class="text-[10px] font-bold">স্টক</span>
+      </button>
+
+      <!-- 3. Central Add Button (FAB) - Admin Only -->
+      <div class="relative w-16 h-14 flex justify-center admin-only">
+        <button onclick="openEditCarModal()" class="fab-button w-14 h-14 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl border-[4px] border-slate-50 shadow-lg shadow-indigo-500/50 hover:scale-105 transition transform">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </div>
+
+      <!-- 4. Installments -->
+      <button onclick="switchTab('installments')" class="mob-nav-btn flex flex-col items-center justify-center w-16 h-14 pb-1 hover:text-white transition" data-target="installments">
+        <i class="fa-solid fa-hand-holding-dollar text-lg mb-1"></i>
+        <span class="text-[10px] font-bold">কিস্তি</span>
+      </button>
+
+      <!-- 5. Print -->
+      <button onclick="switchTab('reports')" class="mob-nav-btn flex flex-col items-center justify-center w-16 h-14 pb-1 hover:text-white transition text-amber-400/80 hover:text-amber-400" data-target="reports">
+        <i class="fa-solid fa-print text-lg mb-1"></i>
+        <span class="text-[10px] font-bold">প্রিন্ট</span>
+      </button>
+    </nav>
+
+  </div> <!-- End App Container -->
+
+  <!-- ==========================================
+       MODALS
+  =========================================== -->
+
   <div id="carModal" class="modal-backdrop fixed inset-0 bg-slate-900/60 hidden items-center justify-center p-4 z-[60] backdrop-blur-sm no-print">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto border-t-4 border-indigo-600 relative">
-      <h3 id="car-modal-title" class="font-black text-xl mb-5 border-b pb-2 text-slate-800">গাড়ি এন্ট্রি</h3>
-      <form id="car-form" class="space-y-4 text-sm">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 md:p-8 max-h-[90vh] overflow-y-auto border-t-8 border-indigo-600 relative slide-up">
+      <div class="flex justify-between items-center mb-6">
+        <h3 id="car-modal-title" class="font-black text-xl text-slate-800">নতুন গাড়ি এন্ট্রি</h3>
+        <button onclick="closeModal('carModal')" class="text-slate-400 hover:text-rose-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+      </div>
+      
+      <form id="car-form" class="space-y-4 text-sm font-medium">
         <input type="hidden" id="c-id">
         <div class="grid grid-cols-2 gap-4">
-          <div><label class="block font-bold mb-1">প্লেট নম্বর</label><input type="text" id="c-plate" required class="bg-slate-50 w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500"></div>
-          <div><label class="block font-bold mb-1">চ্যাসিস নম্বর (VIN)</label><input type="text" id="c-chassis" required class="bg-slate-50 w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500"></div>
-          <div><label class="block font-bold mb-1">মডেল</label><input type="text" id="c-model" required class="bg-slate-50 w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500"></div>
-          <div><label class="block font-bold mb-1">ক্রয় মূল্য (KWD)</label><input type="number" id="c-buy" step="0.001" required class="bg-slate-50 w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500"></div>
+          <div><label class="block font-bold mb-1 text-slate-700">প্লেট নম্বর</label><input type="text" id="c-plate" required class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 font-mono"></div>
+          <div><label class="block font-bold mb-1 text-slate-700">চ্যাসিস (VIN)</label><input type="text" id="c-chassis" required class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 font-mono"></div>
+          <div class="col-span-2"><label class="block font-bold mb-1 text-slate-700">মডেল ও সাল</label><input type="text" id="c-model" required placeholder="Toyota Prado 2023" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"></div>
+          
+          <div><label class="block font-bold mb-1 text-slate-700">ক্রয় মূল্য (KWD)</label><input type="number" id="c-buy" step="0.001" required class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 font-mono text-indigo-700"></div>
+          <div><label class="block font-bold mb-1 text-slate-700">বিক্রয় মূল্য (KWD)</label><input type="number" id="c-sell" step="0.001" required class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 font-mono text-emerald-700"></div>
           
           <div class="col-span-2">
             <label class="block font-bold mb-1 text-slate-700">স্ট্যাটাস</label>
-            <select id="c-status" class="w-full border p-2.5 rounded-lg bg-white outline-none focus:border-indigo-500">
+            <select id="c-status" class="w-full border border-slate-200 p-3 rounded-xl bg-white outline-none focus:ring-2 focus:ring-indigo-500 font-bold">
               <option value="stock">স্টকে আছে (In Stock)</option>
-              <option value="sold">বিক্রি হয়েছে (Sold)</option>
+              <option value="sold">বিক্রি হয়েছে (Sold out)</option>
             </select>
           </div>
 
           <div class="col-span-2">
-            <label class="block font-bold mb-1 text-slate-700">ইনভেস্টর মালিক (Company Name)</label>
-            <input type="text" value="Al Jahra Shamiti" disabled class="bg-slate-200 text-slate-600 w-full border p-2.5 rounded-lg font-bold">
+            <label class="block font-bold mb-1 text-slate-700">ইনভেস্টর মালিক (Owner)</label>
+            <input type="text" value="Al Jahra Shamiti" disabled class="w-full bg-slate-100 text-slate-500 border border-slate-200 p-3 rounded-xl font-bold">
           </div>
 
           <div class="col-span-2">
-            <label class="block font-bold mb-1 text-slate-700">গ্যারান্টার (Guarantor)</label>
-            <select id="c-guarantor" class="w-full border p-2.5 rounded-lg bg-white outline-none focus:border-indigo-500">
+            <label class="block font-bold mb-1 text-slate-700">গ্যারান্টার / রেফারেন্স</label>
+            <select id="c-guarantor" class="w-full border border-slate-200 p-3 rounded-xl bg-white outline-none focus:ring-2 focus:ring-indigo-500 font-bold">
               <script>
                 printMembers.forEach(n => document.write(`<option value="${n}">${n}</option>`));
               </script>
@@ -298,127 +446,98 @@
           
           <div class="col-span-2">
             <label class="block font-bold mb-1 text-slate-700">নোট (Note)</label>
-            <textarea id="c-note" rows="2" class="bg-slate-50 w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500"></textarea>
+            <textarea id="c-note" rows="2" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
           </div>
         </div>
-        <div class="flex justify-end gap-3 mt-6">
-          <button type="button" onclick="closeModal('carModal')" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-lg font-bold transition">বাতিল</button>
-          <button type="submit" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold transition shadow-md">সেভ করুন</button>
+        <div class="flex justify-end gap-3 mt-8 pt-4 border-t border-slate-100">
+          <button type="button" onclick="closeModal('carModal')" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold transition">বাতিল</button>
+          <button type="submit" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition shadow-md">সেভ করুন</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ADD/EDIT INVESTOR MODAL -->
   <div id="investorModal" class="modal-backdrop fixed inset-0 bg-slate-900/60 hidden items-center justify-center p-4 z-[60] backdrop-blur-sm no-print">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto border-t-4 border-emerald-500 relative">
-      <h3 id="investor-modal-title" class="font-black text-xl mb-5 border-b pb-2 text-slate-800">ইনভেস্টর প্রোফাইল</h3>
-      <form id="investor-form" class="space-y-4 text-sm">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 md:p-8 max-h-[90vh] overflow-y-auto border-t-8 border-emerald-500 relative">
+      <h3 id="investor-modal-title" class="font-black text-xl mb-6 text-slate-800">ইনভেস্টর প্রোফাইল</h3>
+      <form id="investor-form" class="space-y-5 text-sm font-medium">
         <input type="hidden" id="i-id">
         <div>
-          <label class="block font-bold mb-1">নাম (Name)</label>
-          <select id="i-name" class="w-full border p-2.5 rounded-lg bg-white outline-none focus:border-emerald-500 font-bold text-slate-800">
+          <label class="block font-bold mb-1 text-slate-700">নাম (Name)</label>
+          <select id="i-name" class="w-full border border-slate-200 p-3 rounded-xl bg-white outline-none focus:ring-2 focus:ring-emerald-500 font-bold text-slate-800">
              <script>
                 printMembers.forEach(n => document.write(`<option value="${n}">${n}</option>`));
              </script>
           </select>
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <div><label class="block font-bold mb-1">মূলধন (KWD)</label><input type="number" id="i-capital" required class="bg-slate-50 w-full border p-2.5 rounded-lg outline-none focus:border-emerald-500"></div>
-          <div><label class="block font-bold mb-1">শেয়ার (%)</label><input type="number" id="i-share" required class="bg-slate-50 w-full border p-2.5 rounded-lg outline-none focus:border-emerald-500"></div>
+          <div><label class="block font-bold mb-1 text-slate-700">মূলধন (KWD)</label><input type="number" id="i-capital" required class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 font-mono text-emerald-700"></div>
+          <div><label class="block font-bold mb-1 text-slate-700">শেয়ার (%)</label><input type="number" id="i-share" required class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 font-mono"></div>
         </div>
         <div>
-          <label class="block font-bold mb-1 text-xs text-slate-500">প্রোফাইল ছবি (Photo - Max 500kb)</label>
-          <input type="file" id="i-photo" accept="image/*" class="w-full border p-2 rounded-lg bg-slate-50 text-xs">
+          <label class="block font-bold mb-1 text-slate-700">প্রোফাইল ছবি (Photo)</label>
+          <input type="file" id="i-photo" accept="image/*" class="w-full border border-slate-200 p-2.5 rounded-xl bg-slate-50 text-xs">
+          <p class="text-[10px] text-slate-400 mt-1">* Max size 1MB. Saves locally.</p>
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block font-bold mb-1">চেকবুক দেওয়া আছে?</label>
-            <select id="i-check" class="bg-slate-50 w-full border p-2.5 rounded-lg outline-none focus:border-emerald-500"><option value="Yes">হ্যাঁ (Yes)</option><option value="No">না (No)</option></select>
+            <label class="block font-bold mb-1 text-slate-700">চেকবুক দেওয়া আছে?</label>
+            <select id="i-check" class="w-full border border-slate-200 p-3 rounded-xl bg-white outline-none focus:ring-2 focus:ring-emerald-500"><option value="Yes">হ্যাঁ (Yes)</option><option value="No">না (No)</option></select>
           </div>
           <div>
-            <label class="block font-bold mb-1">নমিনি (Nominee)</label>
-            <input type="text" id="i-nominee" class="bg-slate-50 w-full border p-2.5 rounded-lg outline-none focus:border-emerald-500" placeholder="নমিনির নাম">
+            <label class="block font-bold mb-1 text-slate-700">নমিনি (Nominee)</label>
+            <input type="text" id="i-nominee" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500" placeholder="নাম">
           </div>
         </div>
-        <div class="flex justify-end gap-3 mt-6">
-          <button type="button" onclick="closeModal('investorModal')" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-lg font-bold transition">বাতিল</button>
-          <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold transition shadow-md">সংরক্ষণ</button>
+        <div class="flex justify-end gap-3 mt-6 border-t border-slate-100 pt-4">
+          <button type="button" onclick="closeModal('investorModal')" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold transition">বাতিল</button>
+          <button type="submit" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition shadow-md">সংরক্ষণ</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- DETAILS MODAL -->
-  <div id="carDetailsModal" class="modal-backdrop fixed inset-0 bg-slate-900/60 hidden items-center justify-center p-4 z-[70] backdrop-blur-sm no-print">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border-t-4 border-amber-500 relative">
-      <h3 class="font-black text-xl mb-4 border-b pb-2 text-slate-800">গাড়ির সম্পূর্ণ ইতিহাস</h3>
-      <div class="space-y-3 text-sm" id="car-details-content"></div>
-      <div class="mt-6 flex justify-end">
-        <button onclick="closeModal('carDetailsModal')" class="px-5 py-2 bg-slate-800 text-white rounded-lg font-bold shadow">বন্ধ করুন</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- RECEIPT MODAL (Print Target) -->
   <div id="receiptModal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4">
-    <!-- Separate background overlay so it can be hidden during print -->
     <div class="modal-backdrop absolute inset-0 bg-slate-900/60 backdrop-blur-sm no-print" onclick="closeModal('receiptModal')"></div>
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 relative border border-slate-200 z-10 mx-auto">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 relative z-10 mx-auto">
       <div id="receipt-content" class="text-center text-sm space-y-2">
-        <div class="w-12 h-12 bg-slate-900 text-white rounded-lg flex items-center justify-center text-xl font-bold mx-auto mb-2 no-print">ج</div>
-        <h2 class="text-xl font-black text-slate-900">AL JAHRA SAMITI</h2>
-        <p class="text-[11px] font-bold text-slate-500 mb-4 border-b pb-4 uppercase tracking-widest">ডিজিটাল মানি রিসিট (Receipt)</p>
+        <div class="w-14 h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-2 no-print shadow-lg">ج</div>
+        <h2 class="text-xl font-black text-slate-900 uppercase">AL JAHRA SAMITI</h2>
+        <p class="text-[10px] font-bold text-slate-500 mb-4 border-b pb-4 uppercase tracking-widest">ডিজিটাল মানি রিসিট</p>
         
         <div class="space-y-3 pt-2">
           <div class="flex justify-between text-left text-xs font-bold border-b border-dashed pb-2"><span>গাড়ি (Car):</span><span id="r-car" class="font-mono text-slate-800"></span></div>
           <div class="flex justify-between text-left text-xs font-bold border-b border-dashed pb-2"><span>গ্যারান্টার:</span><span id="r-cust" class="text-slate-800"></span></div>
         </div>
         
-        <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-lg mt-6">
-          <div class="flex justify-between font-bold text-sm"><span>কিস্তি আদায়:</span><span id="r-paid" class="text-emerald-700 tabular-nums"></span></div>
-          <div class="flex justify-between text-xs mt-2 text-slate-600 font-bold border-t border-emerald-200 pt-2"><span>বর্তমান বকেয়া:</span><span id="r-due" class="tabular-nums"></span></div>
+        <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl mt-6">
+          <div class="flex justify-between font-black text-sm"><span>কিস্তি আদায়:</span><span id="r-paid" class="text-emerald-700 tabular-nums"></span></div>
+          <div class="flex justify-between text-xs mt-2 text-slate-600 font-bold border-t border-emerald-200/50 pt-2"><span>বর্তমান বকেয়া:</span><span id="r-due" class="tabular-nums"></span></div>
         </div>
       </div>
       <div class="mt-6 flex gap-3 no-print">
-        <button onclick="closeModal('receiptModal')" class="flex-1 bg-slate-100 hover:bg-slate-200 py-2.5 rounded-lg font-bold text-xs transition">বন্ধ</button>
-        <button onclick="executePrint('receipt')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg font-bold text-xs transition shadow-md">প্রিন্ট রিসিট</button>
+        <button onclick="closeModal('receiptModal')" class="flex-1 bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold text-sm transition">বন্ধ</button>
+        <button onclick="executePrint('receipt')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-sm transition shadow-md flex justify-center items-center gap-2"><i class="fa-solid fa-print"></i> প্রিন্ট</button>
       </div>
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  <!-- ==========================================
+       JAVASCRIPT LOGIC
+  =========================================== -->
+  <script>
+    // --- Data State ---
+    let carsData = JSON.parse(localStorage.getItem('jahra_cars')) || [];
+    let investorsData = JSON.parse(localStorage.getItem('jahra_investors')) || [];
+    let userRole = null;
+    let cashflowChart = null;
+    let pieChart = null;
 
-    // Firebase Config provided by user
-    const firebaseConfig = {
-      apiKey: "AIzaSyDshS6EI5cuZEp8ja3zQoNgXL2IWS7F0_o",
-      authDomain: "al-jahra-shamiti.firebaseapp.com",
-      projectId: "al-jahra-shamiti",
-      storageBucket: "al-jahra-shamiti.firebasestorage.app",
-      messagingSenderId: "773739112185",
-      appId: "1:773739112185:web:24d51f9d11aff360cf2428"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    window.carsData = [];
-    window.investorsData = [];
-    window.userRole = null;
-    let lineChartInst = null;
-    let pieChartInst = null;
-    
-    const APP_ID = 'al-jahra-accounting-v3';
-    const collCars = collection(db, `artifacts/${APP_ID}/public/data/cars`);
-    const collInvestors = collection(db, `artifacts/${APP_ID}/public/data/investors`);
-
-    // --- Authentication Logic ---
+    // --- Authentication ---
     window.onload = () => {
       const savedRole = localStorage.getItem('jahra_user_role');
       if (savedRole) {
-        window.userRole = savedRole;
+        userRole = savedRole;
         initApp();
       }
     };
@@ -430,22 +549,22 @@
       const err = document.getElementById('login-error');
 
       if (id === 'admin' && pass === 'admin123') {
-        window.userRole = 'admin';
+        userRole = 'admin';
       } else if (id.startsWith('user') && parseInt(id.replace('user', '')) >= 1 && parseInt(id.replace('user', '')) <= 10 && pass === 'user123') {
-        window.userRole = 'user';
+        userRole = 'user';
       } else {
         err.classList.remove('hidden');
         return;
       }
 
-      localStorage.setItem('jahra_user_role', window.userRole);
+      localStorage.setItem('jahra_user_role', userRole);
       err.classList.add('hidden');
       initApp();
     });
 
     window.logout = () => {
       localStorage.removeItem('jahra_user_role');
-      window.userRole = null;
+      userRole = null;
       document.getElementById('app-container').classList.add('hidden');
       document.getElementById('login-screen').classList.remove('hidden');
       document.getElementById('login-form').reset();
@@ -454,201 +573,277 @@
     function initApp() {
       document.getElementById('login-screen').classList.add('hidden');
       document.getElementById('app-container').classList.remove('hidden');
-      document.getElementById('current-user-role').innerText = window.userRole.toUpperCase();
       
+      const roleText = userRole === 'admin' ? 'ADMIN (Full Access)' : 'USER (View Only)';
+      document.getElementById('current-user-role-desktop').innerText = roleText;
+      
+      // Toggle Admin UI elements
       const adminElems = document.querySelectorAll('.admin-only');
-      adminElems.forEach(el => el.style.display = window.userRole === 'admin' ? '' : 'none');
+      adminElems.forEach(el => el.style.display = userRole === 'admin' ? '' : 'none');
 
-      fetchData();
-      window.switchTab('dashboard');
+      // Refresh Data
+      refreshUI();
+      switchTab('dashboard');
     }
 
-    function fetchData() {
-      onSnapshot(collCars, (snapshot) => {
-        window.carsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        renderDashboard();
-        renderCars();
-        renderInstallments();
-      });
-
-      onSnapshot(collInvestors, (snapshot) => {
-        window.investorsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        renderDashboard(); 
-        renderInvestors();
-      });
+    // --- STREAMING_CHUNK: UI Rendering Logic ---
+    function refreshUI() {
+      renderDashboard();
+      renderCars();
+      renderInstallments();
+      renderInvestors();
     }
 
-    // --- STREAMING_CHUNK:Rendering UI Elements... ---
-    function renderDashboard() {
-      const totalCap = window.investorsData.reduce((acc, i) => acc + (Number(i.capital) || 0), 0);
-      const totalInst = window.carsData.reduce((acc, c) => acc + (Number(c.paid) || 0), 0);
-      const totalCars = window.carsData.length;
+    window.switchTab = (tab) => {
+      // Hide all sections
+      document.querySelectorAll('.tab-section').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`tab-${tab}`).classList.remove('hidden');
       
-      document.getElementById('dash-capital').innerText = totalCap.toFixed(3) + ' KWD';
-      document.getElementById('dash-inst-collected').innerText = totalInst.toFixed(3) + ' KWD';
-      document.getElementById('dash-stock').innerText = totalCars + ' টি স্টকে';
+      // Update Title
+      const titles = { dashboard: 'ড্যাশবোর্ড ওভারভিউ', cars: 'গাড়ি স্টক (Inventory)', installments: 'কিস্তি আদায় ও বকেয়া', investors: 'ইনভেস্টর প্রোফাইল', reports: 'অফিসিয়াল প্রিন্ট সেন্টার' };
+      document.getElementById('page-title').innerText = titles[tab];
 
-      if(lineChartInst) lineChartInst.destroy();
-      const ctxLine = document.getElementById('lineChart').getContext('2d');
-      const mockData = [0, totalInst*0.2, totalInst*0.5, totalInst*0.8, totalInst];
-      lineChartInst = new Chart(ctxLine, {
+      // Update Desktop Nav UI
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if(btn.dataset.target === tab) {
+          btn.classList.add('bg-slate-800', 'text-white');
+          btn.classList.remove('text-slate-300');
+        } else {
+          btn.classList.remove('bg-slate-800', 'text-white');
+          btn.classList.add('text-slate-300');
+        }
+      });
+
+      // Update Mobile Nav UI
+      document.querySelectorAll('.mob-nav-btn').forEach(btn => {
+        if(btn.dataset.target === tab) {
+          btn.classList.add('text-white');
+          btn.classList.remove('text-slate-400');
+        } else {
+          btn.classList.remove('text-white');
+          btn.classList.add('text-slate-400');
+        }
+      });
+    };
+
+    function renderDashboard() {
+      const totalCap = investorsData.reduce((sum, i) => sum + Number(i.capital || 0), 0);
+      const totalCollected = carsData.reduce((sum, c) => sum + Number(c.paid || 0), 0);
+      
+      let expectedProfit = 0;
+      carsData.forEach(c => {
+        const sell = Number(c.sellPrice || 0);
+        const buy = Number(c.buyPrice || 0);
+        if(sell > buy) expectedProfit += (sell - buy);
+      });
+
+      document.getElementById('dash-capital').innerHTML = `${totalCap.toFixed(3)} <span class="text-sm">KWD</span>`;
+      document.getElementById('dash-stock').innerText = `${carsData.length} টি স্টকে`;
+      document.getElementById('dash-inst-collected').innerHTML = `${totalCollected.toFixed(3)} <span class="text-sm">KWD</span>`;
+      document.getElementById('dash-profit').innerHTML = `+${expectedProfit.toFixed(3)} <span class="text-sm">KWD</span>`;
+
+      // Charts Setup
+      setupCharts(totalCollected, carsData);
+    }
+
+    function setupCharts(totalInst, cars) {
+      // Line Chart
+      if(cashflowChart) cashflowChart.destroy();
+      const ctxLine = document.getElementById('cashflowChart').getContext('2d');
+      // Mock historical data leading up to current
+      const mockData = [0, totalInst*0.1, totalInst*0.4, totalInst*0.7, totalInst];
+      cashflowChart = new Chart(ctxLine, {
         type: 'line',
         data: {
           labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Current'],
-          datasets: [{ label: 'Cashflow (KWD)', data: mockData, borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', borderWidth: 3, fill: true, tension: 0.4 }]
+          datasets: [{ 
+            label: 'Collection (KWD)', 
+            data: mockData, 
+            borderColor: '#6366f1', 
+            backgroundColor: 'rgba(99, 102, 241, 0.1)', 
+            borderWidth: 3, 
+            fill: true, 
+            tension: 0.4,
+            pointBackgroundColor: '#fff',
+            pointBorderColor: '#6366f1',
+            pointRadius: 4
+          }]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
       });
 
-      if(pieChartInst) pieChartInst.destroy();
+      // Pie Chart
+      if(pieChart) pieChart.destroy();
       const ctxPie = document.getElementById('pieChart').getContext('2d');
-      const inStock = window.carsData.filter(c => c.status === 'stock').length || 0;
-      const sold = window.carsData.filter(c => c.status === 'sold').length || 0;
-      pieChartInst = new Chart(ctxPie, {
+      const stock = cars.filter(c => c.status === 'stock').length;
+      const sold = cars.filter(c => c.status === 'sold').length;
+      pieChart = new Chart(ctxPie, {
         type: 'doughnut',
         data: {
-          labels: ['স্টকে আছে (Stock)', 'বিক্রি (Sold)'],
-          datasets: [{ data: [inStock, sold], backgroundColor: ['#f59e0b', '#10b981'], borderWidth: 0 }]
+          labels: ['স্টকে আছে', 'বিক্রি হয়েছে'],
+          datasets: [{ data: [stock, sold], backgroundColor: ['#f59e0b', '#10b981'], borderWidth: 0 }]
         },
-        options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom' } } }
+        options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'bottom' } } }
       });
     }
 
-    function renderCars() {
-      const tbody = document.getElementById('cars-table-body');
-      tbody.innerHTML = window.carsData.map(c => `
-        <tr class="hover:bg-indigo-50/50 transition border-b border-slate-100 last:border-0">
-          <td class="p-4 font-mono font-bold text-indigo-700 cursor-pointer hover:underline" onclick="viewCarInfo('${c.id}')">${c.plate}</td>
-          <td class="p-4 font-medium text-slate-700">${c.model}</td>
-          <td class="p-4 font-mono font-bold text-slate-700">${Number(c.buyPrice).toFixed(3)}</td>
-          <td class="p-4"><span class="${c.status === 'sold' ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'} px-2.5 py-1 rounded-md text-[11px] font-black uppercase">${c.status === 'sold' ? 'Sold' : 'Stock'}</span></td>
-          <td class="p-4 text-right">
-             ${window.userRole === 'admin' ? `
-               <button onclick="openEditCarModal('${c.id}')" class="text-blue-600 hover:text-blue-800 text-xs font-bold px-2 py-1 bg-blue-50 rounded border border-blue-200 mr-1">Edit</button>
-               <button onclick="deleteCar('${c.id}')" class="text-rose-600 hover:text-rose-800 text-xs font-bold px-2 py-1 bg-rose-50 rounded border border-rose-200">Del</button>
-             ` : '<span class="text-slate-300 text-xs">-</span>'}
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function renderInvestors() {
-      const grid = document.getElementById('investors-grid');
-      grid.innerHTML = window.investorsData.map(i => `
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col hover:shadow-md transition relative overflow-hidden">
-          <div class="flex gap-4 items-start">
-            <div class="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl overflow-hidden flex-shrink-0 border border-slate-200 shadow-sm">
-              ${i.photo ? `<img src="${i.photo}" class="w-full h-full object-cover">` : '<div class="w-full h-full flex items-center justify-center text-xs text-slate-400 font-bold">No Pic</div>'}
-            </div>
-            <div class="flex-1 text-sm">
-              <h4 class="font-black text-lg text-slate-900 leading-tight">${i.name}</h4>
-              <div class="mt-1 flex flex-wrap gap-2 text-xs">
-                <span class="bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded border border-emerald-100">${i.share}% শেয়ার</span>
-                <span class="${i.check==='Yes'?'bg-blue-50 text-blue-700 border-blue-100':'bg-rose-50 text-rose-700 border-rose-100'} font-bold px-2 py-0.5 rounded border">চেক: ${i.check==='Yes'?'আছে':'নাই'}</span>
-              </div>
-            </div>
-          </div>
-          <div class="mt-4 bg-slate-50 rounded-xl p-3 border border-slate-100">
-             <div class="flex justify-between text-xs mb-1"><span class="text-slate-500 font-bold">মূলধন:</span> <span class="font-mono font-black text-slate-800">${Number(i.capital).toFixed(3)} KWD</span></div>
-             <div class="flex justify-between text-xs"><span class="text-slate-500 font-bold">নমিনি:</span> <span class="font-bold text-slate-700">${i.nominee || 'N/A'}</span></div>
-          </div>
-          
-          ${window.userRole === 'admin' ? `
-            <div class="mt-4 flex gap-2 border-t pt-3">
-              <button onclick="openEditInvestorModal('${i.id}')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold py-1.5 rounded transition">এডিট করুন</button>
-              <button onclick="deleteInvestor('${i.id}')" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-1.5 rounded transition">ডিলিট</button>
-            </div>
-          ` : ''}
-        </div>
-      `).join('');
-    }
-
-    function renderInstallments() {
-      const tbody = document.getElementById('installments-table-body');
-      tbody.innerHTML = window.carsData.map(c => `
-        <tr class="hover:bg-slate-50 border-b border-slate-100">
-          <td class="p-4">
-            <div class="font-bold text-slate-800">${c.plate}</div>
-            <div class="text-xs text-slate-500 font-medium">${c.guarantor}</div>
-          </td>
-          <td class="p-4 font-mono text-emerald-600 font-black bg-emerald-50/50">${Number(c.paid || 0).toFixed(3)}</td>
-          <td class="p-4 font-mono text-rose-600 font-black">${(Number(c.buyPrice) - Number(c.paid || 0)).toFixed(3)}</td>
-          <td class="p-4 text-right">
-            ${window.userRole === 'admin' ? `<button onclick="payInstallment('${c.id}', 100)" class="bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded text-xs font-bold shadow-sm transition">+ Pay 100</button>` : '<span class="text-xs text-slate-400">Not Auth</span>'}
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    // --- STREAMING_CHUNK:App Logic and Print Logic... ---
-    window.switchTab = (tab) => {
-      document.querySelectorAll('.tab-section').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`tab-${tab}`).classList.remove('hidden');
-      const titles = { dashboard: 'ড্যাশবোর্ড', cars: 'গাড়ি স্টক (Car Inventory)', installments: 'কিস্তি আদায়', investors: 'ইনভেস্টর ও মূলধন হিসাব', reports: 'অফিসিয়াল প্রিন্ট সেন্টার' };
-      document.getElementById('page-title').innerText = titles[tab];
-    };
-
-    window.closeModal = (id) => {
-      document.getElementById(id).classList.add('hidden');
-      document.body.classList.remove('printing-receipt'); // reset print class just in case
-    };
-
+    // --- STREAMING_CHUNK: CRUD Operations ---
     window.openEditCarModal = (id = null) => {
+      if(userRole !== 'admin') return;
       document.getElementById('car-form').reset();
-      const modalTitle = document.getElementById('car-modal-title');
+      const title = document.getElementById('car-modal-title');
       const idField = document.getElementById('c-id');
       
       if (id) {
-        modalTitle.innerText = "গাড়ি এডিট করুন (Edit Car)";
-        const c = window.carsData.find(x => x.id === id);
+        title.innerText = "গাড়ি এডিট করুন";
+        const c = carsData.find(x => x.id === id);
         idField.value = c.id;
         document.getElementById('c-plate').value = c.plate;
         document.getElementById('c-chassis').value = c.chassis;
         document.getElementById('c-model').value = c.model;
         document.getElementById('c-buy').value = c.buyPrice;
-        document.getElementById('c-status').value = c.status || 'stock';
+        document.getElementById('c-sell').value = c.sellPrice || 0;
+        document.getElementById('c-status').value = c.status;
         document.getElementById('c-guarantor').value = c.guarantor;
         document.getElementById('c-note').value = c.note || '';
       } else {
-        modalTitle.innerText = "নতুন গাড়ি এন্ট্রি (Add Car)";
+        title.innerText = "নতুন গাড়ি এন্ট্রি";
         idField.value = '';
       }
       document.getElementById('carModal').classList.remove('hidden');
     };
 
-    document.getElementById('car-form').addEventListener('submit', async (e) => {
+    document.getElementById('car-form').addEventListener('submit', (e) => {
       e.preventDefault();
-      if(window.userRole !== 'admin') return;
+      if(userRole !== 'admin') return;
+      
       const id = document.getElementById('c-id').value;
-      const data = {
+      const cData = {
         plate: document.getElementById('c-plate').value,
         chassis: document.getElementById('c-chassis').value,
         model: document.getElementById('c-model').value,
         buyPrice: Number(document.getElementById('c-buy').value),
+        sellPrice: Number(document.getElementById('c-sell').value),
         status: document.getElementById('c-status').value,
         guarantor: document.getElementById('c-guarantor').value,
         note: document.getElementById('c-note').value,
       };
 
-      try {
-        if (id) await updateDoc(doc(db, collCars.path, id), data);
-        else {
-          data.paid = 0;
-          data.date = new Date().toISOString();
-          await addDoc(collCars, data);
-        }
-        window.closeModal('carModal');
-      } catch (err) { alert(err.message); }
+      if (id) {
+        const idx = carsData.findIndex(x => x.id === id);
+        carsData[idx] = { ...carsData[idx], ...cData };
+      } else {
+        cData.id = Date.now().toString();
+        cData.paid = 0;
+        carsData.push(cData);
+      }
+      saveAndRefresh();
+      closeModal('carModal');
     });
 
-    window.deleteCar = async (id) => {
-      if(window.userRole !== 'admin') return;
-      if(confirm('Warning: Are you sure you want to delete this car completely?')) {
-        await deleteDoc(doc(db, collCars.path, id));
+    window.deleteCar = (id) => {
+      if(userRole !== 'admin') return;
+      if(confirm('Are you sure you want to delete this car?')) {
+        carsData = carsData.filter(x => x.id !== id);
+        saveAndRefresh();
       }
+    }
+
+    function renderCars() {
+      const tbody = document.getElementById('cars-table-body');
+      const q = (document.getElementById('search-car') || {value:''}).value.toLowerCase();
+      
+      const filtered = carsData.filter(c => c.model.toLowerCase().includes(q) || c.plate.toLowerCase().includes(q));
+      
+      tbody.innerHTML = filtered.map(c => `
+        <tr class="hover:bg-slate-50 transition border-b border-slate-100 last:border-0">
+          <td class="p-4 font-mono font-bold text-indigo-700">${c.plate}</td>
+          <td class="p-4 font-bold text-slate-700">${c.model}</td>
+          <td class="p-4 font-mono font-bold text-slate-500">${Number(c.buyPrice).toFixed(3)}</td>
+          <td class="p-4 font-mono font-bold text-emerald-600">${Number(c.sellPrice||0).toFixed(3)}</td>
+          <td class="p-4"><span class="${c.status === 'sold' ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'} px-3 py-1 rounded-lg text-xs font-black uppercase">${c.status === 'sold' ? 'Sold' : 'Stock'}</span></td>
+          <td class="p-4 text-right">
+             ${userRole === 'admin' ? `
+               <button onclick="openEditCarModal('${c.id}')" class="text-blue-600 hover:bg-blue-50 w-8 h-8 rounded-lg transition"><i class="fa-solid fa-pen"></i></button>
+               <button onclick="deleteCar('${c.id}')" class="text-rose-600 hover:bg-rose-50 w-8 h-8 rounded-lg transition ml-1"><i class="fa-solid fa-trash"></i></button>
+             ` : '<span class="text-slate-300 text-xs"><i class="fa-solid fa-lock"></i></span>'}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderInstallments() {
+      const tbody = document.getElementById('installments-table-body');
+      tbody.innerHTML = carsData.map(c => {
+        const sell = Number(c.sellPrice || 0);
+        const paid = Number(c.paid || 0);
+        const due = sell - paid;
+        return `
+        <tr class="hover:bg-slate-50 border-b border-slate-100">
+          <td class="p-4">
+            <div class="font-bold text-slate-800 text-base">${c.plate}</div>
+            <div class="text-xs text-slate-500 font-bold mt-1"><i class="fa-solid fa-user-tag mr-1"></i>${c.guarantor}</div>
+          </td>
+          <td class="p-4 font-mono text-slate-800 font-bold">${sell.toFixed(3)}</td>
+          <td class="p-4 font-mono text-emerald-600 font-black bg-emerald-50/30">${paid.toFixed(3)}</td>
+          <td class="p-4 font-mono text-rose-600 font-black">${due.toFixed(3)}</td>
+          <td class="p-4 text-right">
+            ${userRole === 'admin' ? `
+              <button onclick="payInstallment('${c.id}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-end gap-2 ml-auto">
+                <i class="fa-solid fa-plus"></i> Collect
+              </button>
+            ` : '<span class="text-xs text-slate-300"><i class="fa-solid fa-lock"></i> View Only</span>'}
+          </td>
+        </tr>
+      `}).join('');
+    }
+
+    window.payInstallment = (carId) => {
+      if(userRole !== 'admin') return;
+      const amtStr = prompt("Enter amount collected in KWD:");
+      if(!amtStr) return;
+      const amount = Number(amtStr);
+      if(isNaN(amount) || amount <= 0) return alert("Invalid amount");
+
+      const idx = carsData.findIndex(x => x.id === carId);
+      if(idx === -1) return;
+      
+      const c = carsData[idx];
+      c.paid = (c.paid || 0) + amount;
+      saveAndRefresh();
+
+      // Show Receipt
+      document.getElementById('r-car').innerText = c.plate + ' (' + c.model + ')';
+      document.getElementById('r-cust').innerText = c.guarantor;
+      document.getElementById('r-paid').innerText = amount.toFixed(3) + ' KWD';
+      document.getElementById('r-due').innerText = ((Number(c.sellPrice||0) - c.paid)).toFixed(3) + ' KWD';
+      document.getElementById('receiptModal').classList.remove('hidden');
+    }
+
+    // --- STREAMING_CHUNK: Investors Logic ---
+    window.openEditInvestorModal = (id = null) => {
+      if(userRole !== 'admin') return;
+      document.getElementById('investor-form').reset();
+      const title = document.getElementById('investor-modal-title');
+      const idField = document.getElementById('i-id');
+      
+      if (id) {
+        title.innerText = "ইনভেস্টর এডিট করুন";
+        const i = investorsData.find(x => x.id === id);
+        idField.value = i.id;
+        document.getElementById('i-name').value = i.name;
+        document.getElementById('i-capital').value = i.capital;
+        document.getElementById('i-share').value = i.share;
+        document.getElementById('i-check').value = i.check;
+        document.getElementById('i-nominee').value = i.nominee || '';
+      } else {
+        title.innerText = "নতুন ইনভেস্টর যোগ";
+        idField.value = '';
+      }
+      document.getElementById('investorModal').classList.remove('hidden');
     };
 
-    function toBase64(file) {
+    function fileToBase64(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -657,37 +852,16 @@
       });
     }
 
-    window.openEditInvestorModal = (id = null) => {
-      document.getElementById('investor-form').reset();
-      const modalTitle = document.getElementById('investor-modal-title');
-      const idField = document.getElementById('i-id');
-      
-      if (id) {
-        modalTitle.innerText = "ইনভেস্টর এডিট করুন (Edit)";
-        const i = window.investorsData.find(x => x.id === id);
-        idField.value = i.id;
-        document.getElementById('i-name').value = i.name;
-        document.getElementById('i-capital').value = i.capital;
-        document.getElementById('i-share').value = i.share;
-        document.getElementById('i-check').value = i.check;
-        document.getElementById('i-nominee').value = i.nominee || '';
-      } else {
-        modalTitle.innerText = "নতুন ইনভেস্টর যোগ (Add)";
-        idField.value = '';
-      }
-      document.getElementById('investorModal').classList.remove('hidden');
-    };
-
     document.getElementById('investor-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      if(window.userRole !== 'admin') return;
+      if(userRole !== 'admin') return;
       
       const id = document.getElementById('i-id').value;
       const fileInput = document.getElementById('i-photo');
       let base64Photo = null;
       if (fileInput.files.length > 0) {
-        if(fileInput.files[0].size > 500000) { alert("Max file size 500kb."); return; }
-        base64Photo = await toBase64(fileInput.files[0]);
+        if(fileInput.files[0].size > 1000000) return alert("File too large. Max 1MB.");
+        base64Photo = await fileToBase64(fileInput.files[0]);
       }
 
       const data = {
@@ -697,90 +871,112 @@
         check: document.getElementById('i-check').value,
         nominee: document.getElementById('i-nominee').value
       };
-      
-      if (base64Photo) data.photo = base64Photo;
 
-      try {
-        if (id) await updateDoc(doc(db, collInvestors.path, id), data);
-        else await addDoc(collInvestors, data);
-        window.closeModal('investorModal');
-      } catch (err) { alert(err.message); }
+      if (id) {
+        const idx = investorsData.findIndex(x => x.id === id);
+        if (base64Photo) data.photo = base64Photo;
+        else data.photo = investorsData[idx].photo; // retain old
+        investorsData[idx] = { ...investorsData[idx], ...data };
+      } else {
+        data.id = Date.now().toString();
+        if (base64Photo) data.photo = base64Photo;
+        investorsData.push(data);
+      }
+      
+      saveAndRefresh();
+      closeModal('investorModal');
     });
 
-    window.deleteInvestor = async (id) => {
-      if(window.userRole !== 'admin') return;
-      if(confirm('Warning: Delete this investor completely?')) {
-        await deleteDoc(doc(db, collInvestors.path, id));
+    window.deleteInvestor = (id) => {
+      if(userRole !== 'admin') return;
+      if(confirm('Delete this investor profile completely?')) {
+        investorsData = investorsData.filter(x => x.id !== id);
+        saveAndRefresh();
       }
     };
 
-    window.payInstallment = async (carId, amount) => {
-      if(window.userRole !== 'admin') return;
-      const c = window.carsData.find(x => x.id === carId);
-      if(!c) return;
-      try {
-        await updateDoc(doc(db, collCars.path, carId), { paid: (c.paid || 0) + amount });
-        
-        document.getElementById('r-car').innerText = c.plate + ' (' + c.model + ')';
-        document.getElementById('r-cust').innerText = c.guarantor;
-        document.getElementById('r-paid').innerText = amount.toFixed(3) + ' KWD';
-        document.getElementById('r-due').innerText = ((Number(c.buyPrice) - (Number(c.paid||0) + amount))).toFixed(3) + ' KWD';
-        document.getElementById('receiptModal').classList.remove('hidden');
-      } catch(e) { alert(e.message); }
-    };
-
-    window.viewCarInfo = (id) => {
-      const c = window.carsData.find(x => x.id === id);
-      if(!c) return;
-      
-      document.getElementById('car-details-content').innerHTML = `
-        <div class="grid grid-cols-2 gap-y-4 gap-x-2 border-b pb-4 mb-4">
-          <div><span class="text-xs text-slate-500 block uppercase font-bold">প্লেট নম্বর</span><span class="font-mono font-black text-indigo-700 text-lg">${c.plate}</span></div>
-          <div><span class="text-xs text-slate-500 block uppercase font-bold">স্ট্যাটাস</span><span class="font-bold px-2 py-0.5 rounded text-xs ${c.status === 'sold' ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}">${c.status === 'sold' ? 'Sold' : 'Stock'}</span></div>
-          <div><span class="text-xs text-slate-500 block uppercase font-bold">মডেল</span><span class="font-bold text-slate-800">${c.model}</span></div>
-          <div><span class="text-xs text-slate-500 block uppercase font-bold">ক্রয় মূল্য</span><span class="font-mono font-black text-slate-800">${Number(c.buyPrice).toFixed(3)} KWD</span></div>
+    function renderInvestors() {
+      const grid = document.getElementById('investors-grid');
+      grid.innerHTML = investorsData.map(i => `
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col hover:shadow-md transition">
+          <div class="flex gap-4 items-center mb-4">
+            <div class="w-20 h-20 bg-slate-100 rounded-2xl overflow-hidden shadow-inner border border-slate-200 flex-shrink-0">
+              ${i.photo ? `<img src="${i.photo}" class="w-full h-full object-cover">` : '<div class="w-full h-full flex flex-col items-center justify-center text-slate-300"><i class="fa-solid fa-user text-2xl"></i></div>'}
+            </div>
+            <div>
+              <h4 class="font-black text-xl text-slate-900">${i.name}</h4>
+              <div class="mt-1 flex gap-2">
+                <span class="bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded text-xs border border-indigo-100">${i.share}% শেয়ার</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 space-y-2 text-sm font-medium">
+             <div class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">মূলধন:</span> <span class="font-mono font-black text-slate-800">${Number(i.capital).toFixed(3)} KWD</span></div>
+             <div class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-500">চেকবুক:</span> <span class="${i.check==='Yes'?'text-emerald-600':'text-rose-500'} font-bold">${i.check==='Yes'?'হ্যাঁ (Yes)':'না (No)'}</span></div>
+             <div class="flex justify-between"><span class="text-slate-500">নমিনি:</span> <span class="text-slate-800 font-bold">${i.nominee || 'N/A'}</span></div>
+          </div>
+          
+          ${userRole === 'admin' ? `
+            <div class="mt-4 flex gap-2 pt-2">
+              <button onclick="openEditInvestorModal('${i.id}')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-sm transition"><i class="fa-solid fa-pen mr-1"></i> Edit</button>
+              <button onclick="deleteInvestor('${i.id}')" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2.5 rounded-xl text-sm transition"><i class="fa-solid fa-trash mr-1"></i> Del</button>
+            </div>
+          ` : ''}
         </div>
-        <div class="space-y-4 bg-slate-50 p-4 rounded-xl border">
-          <div><span class="text-xs text-slate-500 block font-bold">গ্যারান্টার (Guarantor)</span><span class="font-black text-slate-900">${c.guarantor}</span></div>
-          <div><span class="text-xs text-slate-500 block font-bold">নোট (Note)</span><div class="text-slate-700 italic mt-1 font-medium">${c.note || 'No notes added.'}</div></div>
-        </div>
-      `;
-      document.getElementById('carDetailsModal').classList.remove('hidden');
+      `).join('');
     }
 
-    // --- Critical Print Logic Fixes ---
-    window.generateReport = () => {
-      const dropdown = document.getElementById('report-type');
-      document.getElementById('rep-display-type').innerText = dropdown.options[dropdown.selectedIndex].text;
+    // --- STREAMING_CHUNK: Report & System Logic ---
+    function saveAndRefresh() {
+      localStorage.setItem('jahra_cars', JSON.stringify(carsData));
+      localStorage.setItem('jahra_investors', JSON.stringify(investorsData));
+      refreshUI();
+    }
+
+    window.closeModal = (id) => {
+      document.getElementById(id).classList.add('hidden');
+      document.body.classList.remove('printing-receipt');
+    };
+
+    window.generateReportData = () => {
+      const type = document.getElementById('report-type').value;
+      const displayObj = { 'Monthly': 'মাসিক (Monthly)', 'Quarterly': 'ত্রৈমাসিক (Quarterly)', 'Yearly': 'বাৎসরিক (Yearly)' };
+      document.getElementById('rep-display-type').innerText = displayObj[type];
       
-      const totalBuy = window.carsData.reduce((acc, c) => acc + Number(c.buyPrice), 0);
-      const totalPaid = window.carsData.reduce((acc, c) => acc + Number(c.paid||0), 0);
-      const totalCap = window.investorsData.reduce((acc, i) => acc + Number(i.capital), 0);
+      const totalBuy = carsData.reduce((acc, c) => acc + Number(c.buyPrice||0), 0);
+      const totalSell = carsData.reduce((acc, c) => acc + Number(c.sellPrice||0), 0);
+      const totalPaid = carsData.reduce((acc, c) => acc + Number(c.paid||0), 0);
+      const totalDue = totalSell - totalPaid;
+      const totalCap = investorsData.reduce((acc, i) => acc + Number(i.capital||0), 0);
+      
+      // Calculate expected profit based on sold items or generally sellPrice - buyPrice for items with sellPrice > 0
+      let expectedProfit = 0;
+      carsData.forEach(c => {
+        if(c.sellPrice > c.buyPrice) expectedProfit += (c.sellPrice - c.buyPrice);
+      });
       
       document.getElementById('rep-capital').innerText = totalCap.toFixed(3);
       document.getElementById('rep-car-cost').innerText = totalBuy.toFixed(3);
       document.getElementById('rep-inst-collected').innerText = totalPaid.toFixed(3);
+      document.getElementById('rep-due').innerText = totalDue.toFixed(3);
+      document.getElementById('rep-profit').innerText = "+" + expectedProfit.toFixed(3);
     }
 
     window.executePrint = (type) => {
-      // Add a class to the body indicating what we are printing
-      // CSS media queries will handle the show/hide cleanly.
-      const classToAdd = type === 'receipt' ? 'printing-receipt' : 'printing-report';
+      // type: 'report' or 'receipt'
+      const printClass = type === 'receipt' ? 'printing-receipt' : 'printing-report';
       
-      document.body.classList.add(classToAdd);
+      if(type === 'report') generateReportData();
+
+      document.body.classList.add(printClass);
       
-      // Allow browser to apply styles, then trigger print
       setTimeout(() => {
         window.print();
-        // Clean up classes after print dialog closes
         setTimeout(() => {
-          document.body.classList.remove(classToAdd);
+          document.body.classList.remove(printClass);
         }, 500);
-      }, 100);
-    };
-
-    window.printReport = () => {
-      executePrint('report');
+      }, 150);
     };
 
   </script>
